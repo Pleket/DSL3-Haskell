@@ -32,7 +32,8 @@ library
   import:             shared-properties
   hs-source-dirs:     src
   exposed-modules:    Algebra,
-                      Primes
+                      Primes,
+                      Moduli
   build-depends:      containers, 
                       arithmoi,
                       array (>=0.5 && <0.6),
