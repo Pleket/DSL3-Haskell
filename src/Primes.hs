@@ -6,16 +6,17 @@
    License      : None
 -}
 module Primes (
-   Prime,
-   isPrime, factorise, factorBack
+   Prime, UniqueFactorisation, Word
+   , isPrime, factorise, factorBack
    , unPrime, nextPrime, precPrime, nearestPrime
 )
 where
 
 import Math.NumberTheory.ArithmeticFunctions ()
 import Math.NumberTheory.Primes
+import Data.Bits
 
-nearestPrime :: Integral a => a -> Prime a
+nearestPrime :: (Integral a, Data.Bits.Bits a, UniqueFactorisation a) => a -> Prime a
 nearestPrime n 
-      | abs (nextPrime n - n) < abs (precPrime n - n)    = nextPrime n
-      | otherwise                                        = precPrime n
+      | abs (unPrime (nextPrime n) - n) < abs (unPrime (precPrime n) - n)     = nextPrime n
+      | otherwise                                                             = precPrime n
