@@ -11,6 +11,7 @@ module Algebra (
     , greaterPoly, equalPoly
     , addPoly, subtractPoly, multPoly, expPoly
     , multPolyVar, modDivPoly, modDivPolyRemainder, gcdPoly
+    , solution
 )
 where
 
@@ -192,3 +193,10 @@ gcdPoly xs [0] = xs
 gcdPoly xs ys 
     | greaterPoly xs ys     = gcdPoly ys (modDivPolyRemainder xs ys)
     | otherwise             = gcdPoly xs (modDivPolyRemainder ys xs)
+
+solution :: Poly -> Int -> Int
+solution as x = calcSol as x 0
+    where
+        calcSol :: Poly -> Int -> Int -> Int
+        calcSol [] _ _ = 0
+        calcSol (b:bs) y i = b * y^i + calcSol bs y (i+1)
