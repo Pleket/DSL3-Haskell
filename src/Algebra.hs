@@ -6,8 +6,8 @@
    License      : None
 -}
 module Algebra (
-    Poly,
-    showPoly
+    Poly, PolyRemainder
+    , showPoly
     , greaterPoly, equalPoly
     , addPoly, subtractPoly, multPoly, expPoly
     , multPolyVar, modDivPoly, modDivPolyRemainder, gcdPoly
@@ -54,14 +54,14 @@ greaterPoly     :: Poly
 greaterPoly [] [] = False
 greaterPoly xs ys   | length xs > length ys     = True
                     | length xs < length ys     = False
-                    | otherwise                 = checkGreater (reverse xs) (reverse ys)
+                    | otherwise                 = checkGreater (zip (reverse xs) (reverse ys))
     where
-        checkGreater :: Poly -> Poly -> Bool
-        checkGreater [] [] = False
-        checkGreater (a : as) (b : bs)
+        checkGreater :: [(Int, Int)] -> Bool
+        checkGreater [] = False
+        checkGreater ((a, b):as)
             | a > b     = True
             | a < b     = False
-            | otherwise = checkGreater as bs
+            | otherwise = checkGreater as
 
 -- | 'equalPoly' takes two polynomials and returns whether or not they are equal.
 equalPoly   :: Poly
@@ -167,6 +167,7 @@ modDivPolyAux xs ys
                         | f cs (multPoly ds [l])                                = binaryDiv cs ds f (l `div` 2, u)
                         | f cs (multPoly ds [(l+u) `div` 2])                    = binaryDiv cs ds f (l, (l+u) `div` 2)
                         | not (f cs (multPoly ds [(l+u) `div` 2]))              = binaryDiv cs ds f ((l+u) `div` 2, u)
+                        | otherwise                                             = -1
 
 -- | 'multPolyVar' takes a polynomial and an integer and returns the polynomial multiplied by the variable to the power of the integer.
 
@@ -175,8 +176,8 @@ modDivPolyRemainder :: Poly
                     -> Poly
 modDivPolyRemainder xs ys = subtractPoly xs (multPoly ys (modDivPoly xs ys))
 
-modDiv :: Poly -> Poly -> PolyRemainder
-modDiv xs ys = (modDivPoly xs ys, subtractPoly xs (multPoly ys (modDivPoly xs ys)))
+-- modDiv :: Poly -> Poly -> PolyRemainder
+-- modDiv xs ys = (modDivPoly xs ys, subtractPoly xs (multPoly ys (modDivPoly xs ys)))
 
 multPolyVar     :: Poly 
                 -> Int 
