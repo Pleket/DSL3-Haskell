@@ -33,7 +33,7 @@ showExpr (x:xs) i first_val
     | x == 0                = showExpr xs (i+1) first_val
     | i == 0 && x /= 0      = show x ++ showExpr xs (i+1) False
     | x == 1 || x == -1     = addOrSubt x first_val ++ "x^" ++ show i ++ showExpr xs (i+1) False
-    | otherwise             = addOrSubt x first_val ++ show x ++ "x^" ++ show i ++ showExpr xs (i+1) False
+    | otherwise             = addOrSubt x first_val ++ show (abs x) ++ "x^" ++ show i ++ showExpr xs (i+1) False
 
 -- | 'addOrSubt' is used for extra formatting on additions and subtractions in the showExpr function. 
 addOrSubt   :: Int      -- ^ The current value being formatted.
