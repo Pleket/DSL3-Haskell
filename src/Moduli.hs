@@ -8,7 +8,7 @@
 module Moduli (
    Mod
    , getVal, getMod
-   , invertMod, Math.NumberTheory.Powers.Modular.powMod, powModWord, powModInt
+   , invertMod, powMod
    , MultMod
    , isMultElement, multElement, invertGroup
    , chinese, solveLinear, solveQuadratic
@@ -25,5 +25,3 @@ import Math.NumberTheory.Moduli.Chinese
 import Math.NumberTheory.Moduli.Equations
 import Math.NumberTheory.Moduli.Multiplicative
 import Math.NumberTheory.Moduli.Sqrt
-
-import Math.NumberTheory.Powers.Modular
