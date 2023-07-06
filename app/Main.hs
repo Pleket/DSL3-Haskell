@@ -1,5 +1,6 @@
 module Main where
 import Algebra
+import Debug.Trace (trace, traceStack)
 
 main :: IO ()
 -- main = putStrLn "Hello, Haskell!"
@@ -23,3 +24,6 @@ main = do
     
     -- (1 + 2x + 3x^2 + 4x^3) * 3x^7
     print (showPoly (multPoly pol [0,0,0,0,0,0,0,3]))
+
+    -- (3 - 4x + x^2 + 3x^4) / (4 + x^2)
+    print (trace ("Calling modDivPoly") (modDivPoly [3, -4, 1, 0, 3] [4, 0, 1]))

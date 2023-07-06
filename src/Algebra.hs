@@ -17,6 +17,7 @@ where
 
 -- import Data.List
 import GHC.Natural (Natural)
+import Debug.Trace
 
 type Poly = [Int]
 type PolyRemainder = (Poly, Poly)
@@ -138,37 +139,31 @@ cutZeros xs = reverse (cutZeros' (reverse xs))
 modDivPoly      :: Poly
                 -> Poly
                 -> Poly
-modDivPoly xs ys = cutZeros (reverse (modDivPolyAux xs ys))
+modDivPoly xs ys 
+    | greaterPoly xs ys         = cutZeros (reverse (modDivPolyAux xs ys))
+    | otherwise                 = [0]
 
 -- | 'modDivPolyAux' takes two polynomials and returns the floored division of them, in reversed poly order with trailing zeros. 
 modDivPolyAux   :: Poly
                 -> Poly
                 -> Poly
-modDivPolyAux xs ys    
-        | greaterPoly xs ys         = findDiv xs (multPolyVar ys (length xs - length ys)) (length xs - length ys)
-        | otherwise                 = [0]
-        where
+modDivPolyAux xs ys     = findDiv (reverse xs) (reverse ys) (length xs - length ys)
+        where 
             findDiv     :: Poly     -- ^ The polynomial to be divided.
                         -> Poly     -- ^ The polynomial to divide by (multiplied by the variable x to the power of i to start at the highest digit).
                         -> Int      -- ^ The current power of the variable x that the second input is multiplied by.
                         -> Poly
-            findDiv as bs i
-                | i < 0         = []
-                | otherwise     = binaryDiv as bs greaterPoly (0, 2) : 
-                                        findDiv (subtractPoly as (multPoly (multPolyVar bs i) [binaryDiv as bs greaterPoly (0, 2)])) (tail bs) (i-1)
-                where
-                    binaryDiv   :: Poly                     -- ^ The polynomial to be divided.
-                                -> Poly                     -- ^ The polynomial to divide by.
-                                -> (Poly -> Poly -> Bool)   -- ^ The function to compare the two polynomials.
-                                -> (Int, Int)               -- ^ The lower and upper bound of the binary search.
-                                -> Int                      -- ^ The result of the binary search.
-                    binaryDiv cs ds f (l, u)
-                        | l == ((l+u) `div` 2) && not (f cs (multPoly ds [l]))  = l
-                        | not (f cs (multPoly ds [u]))                          = binaryDiv cs ds f (l, u*2)
-                        | f cs (multPoly ds [l])                                = binaryDiv cs ds f (l `div` 2, u)
-                        | f cs (multPoly ds [(l+u) `div` 2])                    = binaryDiv cs ds f (l, (l+u) `div` 2)
-                        | not (f cs (multPoly ds [(l+u) `div` 2]))              = binaryDiv cs ds f ((l+u) `div` 2, u)
-                        | otherwise                                             = -1
+            findDiv [] _ _ = []
+            findDiv (a:as) (b:bs) 0 = [a `div` b]
+            findDiv (a:as) (b:bs) i
+                | a == 0            = 0 : findDiv as (b:bs) (i-1)
+                | a `div` b == 0    = 0 : findDiv as (b:bs) (i-1)
+                | otherwise         = a `div` b : 
+                        findDiv (
+                            reverse (addPolyAux
+                                (reverse as)
+                                (map (* (-1)) (multPoly (multPolyVar (reverse bs) i) [a `div` b]))
+                            )) (b:bs) (i-1)
 
 -- | 'multPolyVar' takes a polynomial and an integer and returns the polynomial multiplied by the variable to the power of the integer.
 
@@ -183,7 +178,7 @@ modDivPolyRemainder xs ys = subtractPoly xs (multPoly ys (modDivPoly xs ys))
 multPolyVar     :: Poly 
                 -> Int 
                 -> Poly
-multPolyVar xs i = replicate 0 i ++ xs
+multPolyVar xs i = replicate i 0 ++ xs
 
 gcdPoly     :: Poly 
             -> Poly 
