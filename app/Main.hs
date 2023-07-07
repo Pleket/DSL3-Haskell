@@ -1,5 +1,6 @@
 module Main where
 import Algebra
+import Primes
 import Debug.Trace (trace, traceStack)
 
 main :: IO ()
@@ -27,3 +28,17 @@ main = do
 
     -- (3 - 4x + x^2 + 3x^4) / (4 + x^2)
     print (trace ("Calling modDivPoly") (modDivPoly [3, -4, 1, 0, 3] [4, 0, 1]))
+
+    print (show (solution [1,0,-6,1] (-4)))
+
+    print (isValidPrime (23 :: Integer))
+    print (isValidPrime (21 :: Integer))
+
+    print (showFactors (factorise (21::Integer)))
+
+    print (unPrime (getNextPrime (23 :: Integer)))
+    print (unPrime (getPrevPrime (23 :: Integer)))
+
+    print (unPrime (getNearestPrime (23 :: Integer)))
+
+    print (nthPrime 8)
