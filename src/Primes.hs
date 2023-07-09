@@ -48,7 +48,7 @@ getNextPrime n    | isValidPrime n     = nextPrime (n + 1)
 
 getPrevPrime   :: (Bits a, Integral a, UniqueFactorisation a) => a   -- ^ The number to find the previous prime for, with the type constraints of a
                -> Prime a                                            -- ^ The previous prime, wrapped in Prime
-getPrevPrime 1    = precPrime 1
+getPrevPrime 2    = precPrime 2
 getPrevPrime n    | isValidPrime n     = precPrime (n - 1)
                   | otherwise          = precPrime n
 
