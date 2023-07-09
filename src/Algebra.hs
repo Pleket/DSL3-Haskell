@@ -154,7 +154,7 @@ modDivPolyAux xs ys     = findDiv (reverse xs) (reverse ys) (length xs - length 
                         -> Int      -- ^ The current power of the variable x that the second input is multiplied by.
                         -> Poly
             findDiv [] _ _ = []
-            findDiv (a:as) (b:bs) 0 = [a `div` b]
+            findDiv (a:_) (b:_) 0 = [a `div` b]
             findDiv (a:as) (b:bs) i
                 | a == 0            = 0 : findDiv as (b:bs) (i-1)
                 | a `div` b == 0    = 0 : findDiv as (b:bs) (i-1)
@@ -165,33 +165,30 @@ modDivPolyAux xs ys     = findDiv (reverse xs) (reverse ys) (length xs - length 
                                 (map (* (-1)) (multPoly (multPolyVar (reverse bs) i) [a `div` b]))
                             )) (b:bs) (i-1)
 
--- | 'multPolyVar' takes a polynomial and an integer and returns the polynomial multiplied by the variable to the power of the integer.
-
-modDivPolyRemainder :: Poly
-                    -> Poly
-                    -> Poly
+-- | 'modDivPolyRemainder' takes two polynomials and returns the remainder of the floored division of them.
+modDivPolyRemainder :: Poly     -- ^ The polynomial to be divided.
+                    -> Poly     -- ^ The polynomial to divide by.
+                    -> Poly     -- ^ The remainder of the floored division of the two polynomials.
 modDivPolyRemainder xs ys = subtractPoly xs (multPoly ys (modDivPoly xs ys))
 
--- modDiv :: Poly -> Poly -> PolyRemainder
--- modDiv xs ys = (modDivPoly xs ys, subtractPoly xs (multPoly ys (modDivPoly xs ys)))
-
-multPolyVar     :: Poly 
-                -> Int 
-                -> Poly
+-- | 'multPolyVar' takes a polynomial and an integer and returns the polynomial multiplied by the variable to the power of the integer.
+multPolyVar     :: Poly     -- ^ The polynomial to be multiplied.
+                -> Int      -- ^ The exponent of the variable x^e to multiply the polynomial by.
+                -> Poly     -- ^ The polynomial multiplied by the variable to the power of the integer.
 multPolyVar xs i = replicate i 0 ++ xs
 
-gcdPoly     :: Poly 
-            -> Poly 
+-- | 'gcdPoly' takes two polynomials and returns the greatest common divisor of them.
+gcdPoly     :: Poly
             -> Poly
+            -> Poly     -- ^ The greatest common divisor of the two polynomials.
 gcdPoly [0] ys = ys
 gcdPoly xs [0] = xs
 gcdPoly xs ys 
     | greaterPoly xs ys     = gcdPoly ys (modDivPolyRemainder xs ys)
     | otherwise             = gcdPoly xs (modDivPolyRemainder ys xs)
 
-solution :: Poly -> Int -> Int
-solution as x = calcSol as x 0
-    where
-        calcSol :: Poly -> Int -> Int -> Int
-        calcSol [] _ _ = 0
-        calcSol (b:bs) y i = b * y^i + calcSol bs y (i+1)
+-- | Calculates a solution for a polynomial with a given x.
+solution    :: Poly     -- ^ The polynomial to be solved.
+            -> Int      -- ^ The x to solve the polynomial for.
+            -> Int      -- ^ The solution of the polynomial for the given x.
+solution as x = sum [a * x^i | (a, i) <- zip as [(0::Integer)..]]

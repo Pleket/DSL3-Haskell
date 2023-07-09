@@ -27,7 +27,7 @@ main = do
     print (showPoly (multPoly pol [0,0,0,0,0,0,0,3]))
 
     -- (3 - 4x + x^2 + 3x^4) / (4 + x^2)
-    print (trace ("Calling modDivPoly") (modDivPoly [3, -4, 1, 0, 3] [4, 0, 1]))
+    print (modDivPoly [3, -4, 1, 0, 3] [4, 0, 1])
 
     print (show (solution [1,0,-6,1] (-4)))
 
