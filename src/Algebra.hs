@@ -181,6 +181,8 @@ multPolyVar xs i = replicate i 0 ++ xs
 gcdPoly     :: Poly
             -> Poly
             -> Poly     -- ^ The greatest common divisor of the two polynomials.
+gcdPoly [1] _ = []
+gcdPoly _ [1] = []
 gcdPoly [0] ys = ys
 gcdPoly xs [0] = xs
 gcdPoly xs ys 
