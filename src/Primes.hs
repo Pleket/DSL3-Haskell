@@ -30,10 +30,12 @@ import Data.IntSet (IntSet)
 import Data.Maybe
 import Data.List (sort, intercalate)
 
+-- | Returns a boolean value for a prime being valid
 isValidPrime   :: (Bits a, Integral a, UniqueFactorisation a) => a   -- ^ The number to check if it is a prime, with the type constraints of a
                -> Bool                                               -- ^ True if the number is a prime, False otherwise
 isValidPrime x = isJust (isPrime x)
 
+-- | Returns the factorisation of a number
 showFactors    :: (UniqueFactorisation a, Ord a, Show a) => [(Prime a, Word)]    -- ^ The list of primes and their exponents
                -> String                                                         -- ^ The string representation of the list of primes and their exponents
 showFactors n = intercalate " * "
@@ -41,17 +43,20 @@ showFactors n = intercalate " * "
   | (b, e) <- sort n
   ]
 
+-- | Returns the next prime, even when the current input is prime
 getNextPrime   :: (Bits a, Integral a, UniqueFactorisation a) => a   -- ^ The number to find the next prime for, with the type constraints of a
                -> Prime a                                            -- ^ The next prime, wrapped in Prime
 getNextPrime n    | isValidPrime n     = nextPrime (n + 1)
                   | otherwise          = nextPrime n
 
+-- | Returns the previous prime, even when the current input is prime
 getPrevPrime   :: (Bits a, Integral a, UniqueFactorisation a) => a   -- ^ The number to find the previous prime for, with the type constraints of a
                -> Prime a                                            -- ^ The previous prime, wrapped in Prime
 getPrevPrime 2    = precPrime 2
 getPrevPrime n    | isValidPrime n     = precPrime (n - 1)
                   | otherwise          = precPrime n
 
+-- | Returns the nearest prime, even when the current input is prime
 getNearestPrime   :: (Bits a, Integral a, UniqueFactorisation a) => a   -- ^ The number to find the nearest prime for, with the type constraints of a
                   -> Prime a                                            -- ^ The nearest prime, wrapped in Prime
 getNearestPrime 1    = nextPrime 2
